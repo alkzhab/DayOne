@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DayOne — Suivi d'entraînements</title>
+<meta name="description" content="DayOne, suivi personnel d'entraînements sportifs : planning, calendrier et programmes.">
+<meta name="theme-color" content="#0D0F12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app" class="app">
+
+  <!-- ===== AUJOURD'HUI ===== -->
+  <section class="view" id="view-today" data-view="today">
+    <header class="hd">
+      <div>
+        <h1 id="today-date">—</h1>
+        <p class="sub" id="today-sub">—</p>
+      </div>
+      <div class="acts">
+        <button class="ib" id="today-locate" aria-label="Revenir à maintenant" title="Revenir à maintenant">
+          <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="6.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></svg>
+        </button>
+        <button class="ib acc" id="today-add" aria-label="Ajouter un entraînement" title="Ajouter un entraînement">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="schedule-wrap" id="today-schedule-wrap">
+      <div class="schedule" id="today-schedule"></div>
+    </div>
+    <div class="fabpos"><button class="fab" id="today-fab" aria-label="Ajouter un entraînement">
+      <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 5v14M5 12h14"/></svg>
+    </button></div>
+  </section>
+
+  <!-- ===== CALENDRIER ===== -->
+  <section class="view" id="view-calendar" data-view="calendar" hidden>
+    <header class="hd">
+      <div><h1>Calendrier</h1></div>
+    </header>
+    <div class="selwrap">
+      <div class="seg" id="cal-mode-seg">
+        <span data-mode="day">Jour</span>
+        <span data-mode="week">Semaine</span>
+        <span data-mode="month">Mois</span>
+      </div>
+    </div>
+    <div class="cnav">
+      <button class="ib plain" id="cal-prev" aria-label="Précédent">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="mid">
+        <b id="cal-title">—</b>
+        <small id="cal-sub"></small>
+      </div>
+      <button class="ib plain" id="cal-next" aria-label="Suivant">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <div class="schedule-wrap" id="cal-day-wrap">
+      <div class="schedule" id="cal-day-schedule"></div>
+    </div>
+
+    <div class="schedule-wrap" id="cal-week-wrap" hidden>
+      <div class="weekhead" id="cal-weekhead"></div>
+      <div class="weekbody" id="cal-weekbody"></div>
+    </div>
+
+    <div id="cal-month-wrap" hidden>
+      <div class="monthgrid" id="cal-monthgrid"></div>
+      <div class="daylist" id="cal-daylist"></div>
+    </div>
+
+    <div class="fabpos"><button class="fab" id="cal-fab" aria-label="Ajouter un entraînement">
+      <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 5v14M5 12h14"/></svg>
+    </button></div>
+  </section>
+
+  <!-- ===== PROGRAMMES (liste) ===== -->
+  <section class="view" id="view-programs" data-view="programs" hidden>
+    <header class="hd">
+      <div><h1>Mes programmes</h1><p class="sub" id="programs-count">—</p></div>
+      <div class="acts">
+        <button class="ib acc" id="programs-add" aria-label="Nouveau programme">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="scroll"><div class="pad" id="programs-list"></div></div>
+  </section>
+
+  <!-- ===== PROGRAMME DÉTAIL ===== -->
+  <section class="view" id="view-program-detail" data-view="program-detail" hidden>
+    <header class="hd bar">
+      <button class="ib plain" id="pd-back" aria-label="Retour">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <h1 id="pd-title">—</h1>
+      <div class="acts">
+        <button class="ib plain" id="pd-edit" aria-label="Modifier le programme">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="scroll"><div class="pad">
+      <div id="pd-meta"></div>
+      <div class="pd-exrow">
+        <b>Exercices</b><span id="pd-excount" class="muted"></span>
+      </div>
+      <div id="pd-exlist"></div>
+      <button class="btn s" id="pd-add-ex">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 5v14M5 12h14"/></svg>
+        Ajouter un exercice
+      </button>
+      <div class="hr-line"></div>
+      <button class="btn d" id="pd-delete">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13"/></svg>
+        Supprimer le programme
+      </button>
+    </div></div>
+  </section>
+
+  <!-- Bottom nav -->
+  <nav class="nav" id="bottom-nav">
+    <a data-tab="today">
+      <span class="pi"><svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/></svg></span>
+      Aujourd'hui
+    </a>
+    <a data-tab="calendar">
+      <span class="pi"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
+      Calendrier
+    </a>
+    <a data-tab="programs">
+      <span class="pi"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></span>
+      Programmes
+    </a>
+  </nav>
+</div>
+
+<!-- ===== Overlay / Modals ===== -->
+<div class="overlay" id="overlay" hidden>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- Fiche entraînement -->
+  <div class="sheet" id="sheet-workout" hidden>
+    <i class="grab"></i>
+    <div class="sh-hd">
+      <div class="emoji-tile" id="wf-emoji-preview">🏋️</div>
+      <div><h2 id="wf-title">Nouvel entraînement</h2><small id="wf-subtitle"></small></div>
+      <button class="ib plain" data-close><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <form id="form-workout">
+      <div class="fld"><label>Nom de l'entraînement</label>
+        <input class="in" type="text" id="wf-name" placeholder="Ex. Lutte" required>
+      </div>
+      <div class="fld"><label>Icône</label>
+        <div class="emoji-picker" id="wf-emoji-picker"></div>
+      </div>
+      <div class="fld"><label>Date</label>
+        <input class="in" type="date" id="wf-date" required>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Début</label><input class="in" type="time" id="wf-start" required></div>
+        <div class="fld"><label>Fin</label><input class="in" type="time" id="wf-end" required></div>
+      </div>
+      <span class="errmsg" id="wf-time-err" hidden>La fin doit être après le début.</span>
+      <div class="fld"><label>Programme associé</label>
+        <select class="in sel" id="wf-program"><option value="">Aucun</option></select>
+      </div>
+      <div class="fld"><label>Statut</label>
+        <div class="seg st" id="wf-status-seg">
+          <span data-status="planned">Prévu</span>
+          <span data-status="done">Réalisé</span>
+          <span data-status="missed">Non réalisé</span>
+        </div>
+      </div>
+      <div class="fld"><label>Intensité · <span id="wf-intensity-label">5 — Modérée</span></label>
+        <div class="ints" id="wf-intensity"></div>
+      </div>
+      <div class="fld"><label>Notes</label>
+        <textarea class="in ta" id="wf-notes" placeholder="Sensations, charges, blessures…"></textarea>
+      </div>
+      <button type="submit" class="btn p">Enregistrer</button>
+      <button type="button" class="btn d" id="wf-delete" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13"/></svg>
+        Supprimer l'entraînement
+      </button>
+    </form>
+  </div>
+
+  <!-- Fiche programme -->
+  <div class="sheet" id="sheet-program" hidden>
+    <i class="grab"></i>
+    <div class="sh-hd">
+      <div class="emoji-tile" id="pf-emoji-preview">🏋️</div>
+      <div><h2 id="pf-title">Nouveau programme</h2></div>
+      <button class="ib plain" data-close><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <form id="form-program">
+      <div class="fld"><label>Nom du programme</label>
+        <input class="in" type="text" id="pf-name" placeholder="Ex. Programme Force" required>
+      </div>
+      <div class="fld"><label>Icône</label>
+        <div class="emoji-picker" id="pf-emoji-picker"></div>
+      </div>
+      <div class="fld"><label>Type d'entraînement</label>
+        <input class="in" type="text" id="pf-type" placeholder="Ex. Musculation, Lutte, Cardio…" required>
+      </div>
+      <div class="fld"><label>Description (facultatif)</label>
+        <textarea class="in ta" id="pf-desc" placeholder="Objectif, fréquence…"></textarea>
+      </div>
+      <button type="submit" class="btn p">Enregistrer</button>
+      <button type="button" class="btn d" id="pf-delete" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13"/></svg>
+        Supprimer le programme
+      </button>
+    </form>
+  </div>
+
+  <!-- Fiche exercice -->
+  <div class="sheet" id="sheet-exercise" hidden>
+    <i class="grab"></i>
+    <div class="sh-hd">
+      <div><h2 id="ef-title">Nouvel exercice</h2><small id="ef-subtitle"></small></div>
+      <button class="ib plain" data-close><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <form id="form-exercise">
+      <div class="fld"><label>Nom de l'exercice</label>
+        <input class="in" type="text" id="ef-name" placeholder="Ex. Squat" required>
+      </div>
+      <div class="row3">
+        <div class="fld"><label>Séries</label><input class="in" type="text" inputmode="numeric" id="ef-sets" placeholder="4"></div>
+        <div class="fld"><label>Répét.</label><input class="in" type="text" inputmode="numeric" id="ef-reps" placeholder="5"></div>
+        <div class="fld"><label>Poids</label><input class="in" type="text" id="ef-weight" placeholder="80 kg"></div>
+      </div>
+      <div class="fld"><label>Distance ou durée (facultatif)</label>
+        <input class="in" type="text" id="ef-distance" placeholder="Ex. 5 km ou 20 min">
+      </div>
+      <div class="fld"><label>Notes</label>
+        <textarea class="in ta" id="ef-notes" placeholder="Technique, repos, consignes…"></textarea>
+      </div>
+      <button type="submit" class="btn p">Enregistrer</button>
+      <button type="button" class="btn d" id="ef-delete" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M9 7V4.5h6V7M6 7l1 13h10l1-13"/></svg>
+        Supprimer l'exercice
+      </button>
+    </form>
+  </div>
+
+  <!-- Confirmation -->
+  <div class="dlg" id="dlg-confirm" hidden>
+    <h4 id="confirm-title">Confirmer ?</h4>
+    <p id="confirm-text"></p>
+    <div class="acts">
+      <button class="btn s" id="confirm-cancel">Annuler</button>
+      <button class="btn dd" id="confirm-ok">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
